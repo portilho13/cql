@@ -1,5 +1,8 @@
+from fm import FileManager
+
 def main():
-    print("Ola")
+    fm = FileManager()
+    fm.LoadTables()
 
 
 

@@ -1,4 +1,4 @@
-from . import Cell
+from .cell import Cell
 
 class Table:
     def __init__(self, params):
@@ -9,7 +9,7 @@ class Table:
     
     def printParams(self):
         for param in self.params:
-            print(f"Param:  {param} | Val: {self.dic[param]}")
+            print(f"Param:  {param}")
 
     def get(self, param):
         #if param not in self.params:
