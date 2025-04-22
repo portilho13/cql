@@ -12,12 +12,15 @@ class FileManager:
 
         files_dirs = [self.path + "/" + file_name for file_name in files_names] # file dir = main dir + tables folder + table name
 
+        tables = []
+
         for file in files_dirs:
             l = self.readFiles(file)
             params = self.getParamNames(l)
             t = Table(params)
             self.populateTable(t, l)
-            t.printTable()
+            tables.append(t)
+        return tables
     
     def readFiles(self, file) -> List[Dict[str, str]]:
         with open(file) as f:
@@ -39,6 +42,6 @@ class FileManager:
     
     def populateTable(self, table, liDict) -> Table:
         for dic in liDict:
-            for _, (key, value) in enumerate(dic.items()):
+            for (key, value) in dic.items():
                 table.add(key, value)
         return table

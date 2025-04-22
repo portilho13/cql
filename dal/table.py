@@ -1,4 +1,5 @@
 from .cell import Cell
+from typing import List, Dict
 
 class Table:
     def __init__(self, params):
@@ -13,11 +14,7 @@ class Table:
         
     def printTable(self):
         keys = list(self.dic.keys())
-
-        # Determine the number of rows (max length among all columns)
         num_rows = max((len(col) for col in self.dic.values()), default=0)
-
-        # Build rows by extracting values from each Cell
         rows = []
         for i in range(num_rows):
             row = []
@@ -26,22 +23,38 @@ class Table:
                     cell = self.dic[key][i]
                     value = cell.get() if isinstance(cell, Cell) else cell
                 except IndexError:
-                    value = ""  # Handle missing cells in shorter columns
+                    value = ""
                 row.append(str(value) if value is not None else "")
             rows.append(row)
-
-        # Calculate column widths based on headers and values
         col_widths = [
             max(len(str(k)), *(len(row[i]) for row in rows)) for i, k in enumerate(keys)
         ]
-
-        # Build table border
         border = "+" + "+".join("-" * (w + 2) for w in col_widths) + "+"
-
-        # Build header row
         header = "| " + " | ".join(str(k).ljust(w) for k, w in zip(keys, col_widths)) + " |"
-
-        # Print the table
+        print(border)
+        print(header)
+        print(border)
+        for row in rows:
+            line = "| " + " | ".join(str(cell).ljust(w) for cell, w in zip(row, col_widths)) + " |"
+            print(line)
+        print(border)
+    
+    def printSelectedTable(self, res: List[Dict]):
+        if not res:
+            print("No data available.")
+            return
+        keys = [key for dic in res for key in dic.keys()]
+        columns = [dic[key] for dic in res for key in dic.keys()]
+        num_rows = max(len(col) for col in columns)
+        for i in range(len(columns)):
+            if len(columns[i]) < num_rows:
+                columns[i] += [""] * (num_rows - len(columns[i]))
+        rows = list(zip(*columns))
+        col_widths = [
+            max(len(str(k)), *(len(str(row[i])) for row in rows)) for i, k in enumerate(keys)
+        ]
+        border = "+" + "+".join("-" * (w + 2) for w in col_widths) + "+"
+        header = "| " + " | ".join(k.ljust(w) for k, w in zip(keys, col_widths)) + " |"
         print(border)
         print(header)
         print(border)
@@ -51,28 +64,22 @@ class Table:
         print(border)
 
 
-    def get(self, param):
-        #if param not in self.params:
-            #Throw Exception as param as to exist in table
-        if self.dic[param]:
-            return self.dic[param]
-        #param can exist with None value
-        return None
+    def getByParams(self, params) -> List[Dict]: #Select x, y, z FROM .....\
+        res = []
+
+        for param in params:
+            dic = {}
+            dic[param] = [val.get() for val in self.dic[param]]
+            res.append(dic)
+
+        self.printSelectedTable(res)  # Now this should work
+        return res
         
     def add(self, param, val):
-        #if param not in self.params:
-            #Throw Exception as param as to exist in table
         self.dic[param].append(Cell(val))
 
     def remove(self, param):
-        #if param not in self.params:
-            #Throw Exception as param as to exist in table
         self.dic[param] = Cell(None)
 
     def update(self, param, val):
-        #if param not in self.params:
-            #Throw Exception as param as to exist in table
         self.dic[param] = Cell(val)
-
-
-
