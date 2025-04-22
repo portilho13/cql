@@ -16,7 +16,8 @@ class FileManager:
             l = self.readFiles(file)
             params = self.getParamNames(l)
             t = Table(params)
-            t.printParams()
+            self.populateTable(t, l)
+            t.printTable()
     
     def readFiles(self, file) -> List[Dict[str, str]]:
         with open(file) as f:
@@ -35,3 +36,9 @@ class FileManager:
             if key not in params:
                 params.append(key)
         return params
+    
+    def populateTable(self, table, liDict) -> Table:
+        for dic in liDict:
+            for _, (key, value) in enumerate(dic.items()):
+                table.add(key, value)
+        return table
