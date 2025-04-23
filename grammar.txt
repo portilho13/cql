@@ -1,0 +1,54 @@
+<programa> ::= <comando> ";" <programa> | <comando> ";"
+
+<comando> ::= <import> 
+            | <export> 
+            | <discard> 
+            | <rename>
+            | <print>
+            | <select>
+            | <create>
+            | <procedure_def>
+            | <procedure_call>
+
+<import> ::= "IMPORT TABLE" <identificador> "FROM" <string_literal>
+
+<export> ::= "EXPORT TABLE" <identificador> "AS" <string_literal>
+
+<discard> ::= "DISCARD TABLE" <identificador>
+
+<rename> ::= "RENAME TABLE" <identificador> <identificador>
+
+<print> ::= "PRINT TABLE" <identificador>
+
+<select> ::= "SELECT" <selecao> "FROM" <identificador> <condicao_opcional> <limit_opcional>
+
+<selecao> ::= "*" | <lista_colunas>
+
+<lista_colunas> ::= <identificador> | <identificador> "," <lista_colunas>
+
+<condicao_opcional> ::= "WHERE" <condicao> | ε
+
+<condicao> ::= <expressao> <operador> <valor> <condicao_extra>
+
+<condicao_extra> ::= "AND" <condicao> | ε
+
+<operador> ::= "=" | "<>" | "<" | ">" | "<=" | ">="
+
+<valor> ::= <numero> | <string_literal> | <identificador>
+
+<limit_opcional> ::= "LIMIT" <numero> | ε
+
+<create> ::= "CREATE TABLE" <identificador> <create_body>
+
+<create_body> ::= "SELECT" <selecao> "FROM" <identificador> <condicao_opcional> 
+                | "FROM" <identificador> "JOIN" <identificador> "USING(" <identificador> ")"
+
+<procedure_def> ::= "PROCEDURE" <identificador> "DO" <programa> "END"
+
+<procedure_call> ::= "CALL" <identificador>
+
+<identificador> ::= [a-zA-Z_][a-zA-Z0-9_]*
+
+<string_literal> ::= "\"" .*? "\""
+
+<numero> ::= [0-9]+("."[0-9]+)?
