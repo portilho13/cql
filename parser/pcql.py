@@ -21,7 +21,8 @@ class ParserCQL(Parser):
                           'discard_table', 
                           'rename',
                           'print_table',
-                          'select'
+                          'select',
+                          'create_table'
                           )
 
     def import_table(self):
@@ -128,11 +129,12 @@ class ParserCQL(Parser):
             return self.condicao()
         except ParseError:
             pass # ε (empty): end of program
+        return None
 
     def condicao(self):
         ident_start = self.char("a-zA-Z_")
         identifier = self.identificador(ident_start)
-        operador = self.keyword("=", "<>", "<", ">", "<=", ">=")
+        operador = self.keyword("<=", ">=", "<>", "=", "<", ">") #Order this way because of self.pos
         valor = self.valor()
         condicao_extra = self.condicao_extra()
         return {"identifier": identifier, "operador": operador, "valor": valor,
@@ -173,6 +175,7 @@ class ParserCQL(Parser):
             return self.condicao()
         except ParseError:
             pass
+        return None
 
     def limit_opcional(self):
         try:
@@ -180,8 +183,53 @@ class ParserCQL(Parser):
             return self.numero()
         except ParseError:
             pass
+        return None
 
+    def create_table(self):
+        self.keyword("CREATE TABLE")
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+        create_body = self.create_body()
+        return {
+            "type": "CREATE",
+            "identifier": identifier,
+            "create_body": create_body 
+        }
 
+    def create_body(self):
+        try:
+            self.keyword("SELECT")
+            selecao = self.selecao()
+            self.keyword("FROM")
+            ident_start = self.char("a-zA-Z_")
+            identifier = self.identificador(ident_start)
+            condicao_opcional = self.condicao_opcional()
+            return {
+                "selecao": selecao,
+                "identifier": identifier,
+                "condicao_opcional": condicao_opcional,
+            }
+        except ParseError:
+            self.keyword("FROM")
+            ident_start = self.char("a-zA-Z_")
+            identifier = self.identificador(ident_start)
+            self.keyword("JOIN")
+
+            ident_start = self.char("a-zA-Z_")
+            identifier2 = self.identificador(ident_start)
+
+            self.keyword("USING")
+
+            self.char("(")
+            ident_start = self.char("a-zA-Z_")
+            identifier3 = self.identificador(ident_start)
+            self.char(")")
+
+            return {
+                "identifier": identifier,
+                "identifier2": identifier2,
+                "identifier3": identifier3,
+            }
 
         
 

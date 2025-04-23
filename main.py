@@ -17,10 +17,11 @@ def main():
     discard = 'DISCARD TABLE observacoes;'
     rename = 'RENAME TABLE ola1 ola2;'
     print_table = 'PRINT TABLE ola;'
-    select = 'SELECT id,nome,etc FROM ola WHERE id = 1;'
+    select = 'SELECT id,nome,etc FROM ola WHERE id >= 1;'
+    create = 'CREATE TABLE completo FROM estacoes JOIN observacoes USING(Id);'
 
     p = ParserCQL()
-    print(p.parse(select))
+    print(p.parse(create))
 
 
 
