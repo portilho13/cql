@@ -23,7 +23,8 @@ class ParserCQL(Parser):
                           'print_table',
                           'select',
                           'create_table',
-                          'procedure_def'
+                          'procedure_def',
+                          'procedure_call'
                           )
 
     def import_table(self):
@@ -250,6 +251,16 @@ class ParserCQL(Parser):
             "type": "PROCEDURE",
             "identifier": identifier,
             "programa": programa
+        }
+    
+    def procedure_call(self):
+        self.keyword("CALL")
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+
+        return {
+            "type": "CALL",
+            "identifier": identifier
         }
 
 

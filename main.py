@@ -23,10 +23,9 @@ def main():
         CREATE TABLE mais_quentes SELECT * FROM observacoes WHERE Temperatura > 22;
         CREATE TABLE completo FROM estacoes JOIN observacoes USING(Id);
     END"""
+    call = "CALL atualizar_vendas;"
 
-    queries = [imp, export, discard, rename, print_table, select, create, procedure_text]
-
-    print(procedure_text[197])
+    queries = [imp, export, discard, rename, print_table, select, create, procedure_text, call]
 
     p = ParserCQL()
     for query in queries:
