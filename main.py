@@ -12,10 +12,11 @@ def main():
 
     #t.getByParams(["Id"])
 
-    text = 'IMPORT TABLE observacoes FROM "ola";'
+    imp = 'IMPORT TABLE observacoes FROM "ola";'
+    export = 'EXPORT TABLE observacoes AS "ola";'
 
     p = ParserCQL()
-    p.parse(text)
+    print(p.parse(export))
 
 
 

@@ -16,7 +16,7 @@ class ParserCQL(Parser):
         return commands
 
     def comando(self):
-        return self.import_table()
+        return self.match('import_table', 'export_table')
 
     def import_table(self):
         self.keyword("IMPORT TABLE")
@@ -38,12 +38,19 @@ class ParserCQL(Parser):
 
     def string_literal(self):
         self.char('"')
-        start = self.pos
+        start = self.pos + 1
         while True:
             ch = self.char()
             if ch == '"':
                 break
         end = self.pos
-        return self.text[start:end - 1]
-
+        return self.text[start:end]
+    
+    def export_table(self):
+        self.keyword("EXPORT TABLE")
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+        self.keyword("AS")
+        string = self.string_literal()
+        return {"type": "EXPORT", "identifier": identifier, "destination": string}
     
