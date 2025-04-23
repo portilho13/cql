@@ -16,7 +16,12 @@ class ParserCQL(Parser):
         return commands
 
     def comando(self):
-        return self.match('import_table', 'export_table', 'discard_table')
+        return self.match('import_table', 
+                          'export_table', 
+                          'discard_table', 
+                          'rename',
+                          'print_table'
+                          )
 
     def import_table(self):
         self.keyword("IMPORT TABLE")
@@ -59,4 +64,20 @@ class ParserCQL(Parser):
         ident_start = self.char("a-zA-Z_")
         identifier = self.identificador(ident_start)
         return {"type": "DISCARD", "identifier": identifier}
+    
+    def rename(self):
+        self.keyword("RENAME TABLE")
+        ident_start_old = self.char("a-zA-Z_")
+        identifier_old = self.identificador(ident_start_old)
 
+        self.eat_whitespace() # Remove withespace between Identifiers
+
+        ident_start_new = self.char("a-zA-Z_")
+        identifier_new = self.identificador(ident_start_new)
+        return {"type": "RENAME", "old_identifier": identifier_old, "new_identifier": identifier_new}
+
+    def print_table(self):
+        self.keyword("PRINT TABLE")
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+        return {"type": "PRINT", "identifier": identifier}

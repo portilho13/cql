@@ -15,9 +15,11 @@ def main():
     imp = 'IMPORT TABLE observacoes FROM "ola";'
     export = 'EXPORT TABLE observacoes AS "ola";'
     discard = 'DISCARD TABLE observacoes;'
+    rename = 'RENAME TABLE ola1 ola2;'
+    print_table = 'PRINT TABLE ola;'
 
     p = ParserCQL()
-    print(p.parse(discard))
+    print(p.parse(print_table))
 
 
 
