@@ -17,9 +17,10 @@ def main():
     discard = 'DISCARD TABLE observacoes;'
     rename = 'RENAME TABLE ola1 ola2;'
     print_table = 'PRINT TABLE ola;'
+    select = 'SELECT id,nome,etc FROM ola WHERE id = 1;'
 
     p = ParserCQL()
-    print(p.parse(print_table))
+    print(p.parse(select))
 
 
 

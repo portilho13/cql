@@ -20,7 +20,8 @@ class ParserCQL(Parser):
                           'export_table', 
                           'discard_table', 
                           'rename',
-                          'print_table'
+                          'print_table',
+                          'select'
                           )
 
     def import_table(self):
@@ -42,7 +43,9 @@ class ParserCQL(Parser):
         return rv
 
     def string_literal(self):
-        self.char('"')
+        c = self.maybe_char('"')
+        if c is None:
+            return None
         start = self.pos + 1
         while True:
             ch = self.char()
@@ -81,3 +84,109 @@ class ParserCQL(Parser):
         ident_start = self.char("a-zA-Z_")
         identifier = self.identificador(ident_start)
         return {"type": "PRINT", "identifier": identifier}
+    
+    def select(self):
+        self.keyword("SELECT")
+        sel = self.selecao()
+        self.keyword("FROM")
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+        condicao_opcional = self.condicao_opcional()
+        limit_opcional = self.limit_opcional()
+
+        return {"type": "SELECT", "sel": sel, "identifier": identifier,
+                "condicao_opcional": condicao_opcional, "limit_opcional": limit_opcional}
+
+    
+    def selecao(self):
+        c = self.maybe_char("*")
+        if c is None:
+            return self.lista_colunas()
+        else:
+            return c
+    
+    def lista_colunas(self):
+        li = []
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+
+        li.append(identifier)
+
+        c = self.maybe_char(",")
+        if c is None: # If no mor identifiers return
+            return li
+        
+        try:
+            li.extend(self.lista_colunas())
+        except ParseError:
+            pass
+        return li
+    
+    def condicao_opcional(self):
+        try:
+            self.keyword("WHERE")
+            return self.condicao()
+        except ParseError:
+            pass # ε (empty): end of program
+
+    def condicao(self):
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+        operador = self.keyword("=", "<>", "<", ">", "<=", ">=")
+        valor = self.valor()
+        condicao_extra = self.condicao_extra()
+        return {"identifier": identifier, "operador": operador, "valor": valor,
+                "condicao_extra": condicao_extra}
+
+    def numero(self): # Only works with int's for now
+        digits = ""
+        digits += self.char("0-9")
+
+        while True:
+            try:
+                digits += self.char("0-9")
+            except ParseError:
+                break
+        
+        return digits
+    
+    def valor(self):
+        try:    # <numero>
+            return self.numero()
+        except ParseError:
+            pass
+
+        try: # <string literal>
+            return self.string_literal()
+        except ParseError:
+            pass
+
+        try: # <identificador>
+            ident_start = self.char("a-zA-Z_")
+            return self.identificador(ident_start)
+        except ParseError:
+            pass
+    
+    def condicao_extra(self):
+        try:
+            self.keyword("AND")
+            return self.condicao()
+        except ParseError:
+            pass
+
+    def limit_opcional(self):
+        try:
+            self.keyword("LIMIT")
+            return self.numero()
+        except ParseError:
+            pass
+
+
+
+        
+
+        
+
+
+
+    
