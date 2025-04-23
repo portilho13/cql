@@ -1,6 +1,7 @@
 from fm import FileManager
 import base64
 from parser.pe import ParseError
+from parser.parser import Parser
 
 def main():
     #fm = FileManager()
@@ -11,8 +12,11 @@ def main():
 
     #t.getByParams(["Id"])
 
-    e = ParseError(13, 'Expected "{" but found "%s"', "[")
-    print(e)
+    text = "" \
+    "SELECT * FROM observacoes;"
+
+    p = Parser()
+    p.parse(text)
 
 
 
