@@ -73,3 +73,31 @@ class Parser:
             'character' if chars is None else '[%s]' % chars,
             next_char
         )
+    
+    def keyword(self, *keywords):
+        self.eat_whitespace()
+
+        if self.pos >= self.len:
+            raise ParseError(
+                self.pos + 1,
+                'Expected %s but got end of string',
+                ','.join(keywords)
+            )
+        
+        for keyword in keywords:
+            low = self.pos + 1
+            high = low + len(keyword)
+
+            if self.text[low::high] == keyword:
+                self.pos += len(keyword)
+                self.eat_whitespace()
+                return keyword
+        
+        raise ParseError(
+            self.pos + 1,
+            'Expected %s but got %s',
+            ','.join(keywords),
+            self.text[self.pos + 1],
+        )
+
+    
