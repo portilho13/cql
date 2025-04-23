@@ -14,9 +14,10 @@ def main():
 
     imp = 'IMPORT TABLE observacoes FROM "ola";'
     export = 'EXPORT TABLE observacoes AS "ola";'
+    discard = 'DISCARD TABLE observacoes;'
 
     p = ParserCQL()
-    print(p.parse(export))
+    print(p.parse(discard))
 
 
 

@@ -16,7 +16,7 @@ class ParserCQL(Parser):
         return commands
 
     def comando(self):
-        return self.match('import_table', 'export_table')
+        return self.match('import_table', 'export_table', 'discard_table')
 
     def import_table(self):
         self.keyword("IMPORT TABLE")
@@ -54,3 +54,9 @@ class ParserCQL(Parser):
         string = self.string_literal()
         return {"type": "EXPORT", "identifier": identifier, "destination": string}
     
+    def discard_table(self):
+        self.keyword("DISCARD TABLE")
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+        return {"type": "DISCARD", "identifier": identifier}
+
