@@ -19,9 +19,18 @@ def main():
     print_table = 'PRINT TABLE ola;'
     select = 'SELECT id,nome,etc FROM ola WHERE id >= 1;'
     create = 'CREATE TABLE completo FROM estacoes JOIN observacoes USING(Id);'
+    procedure_text = """PROCEDURE atualizar_observacoes DO
+        CREATE TABLE mais_quentes SELECT * FROM observacoes WHERE Temperatura > 22;
+        CREATE TABLE completo FROM estacoes JOIN observacoes USING(Id);
+    END"""
+
+    queries = [imp, export, discard, rename, print_table, select, create, procedure_text]
+
+    print(procedure_text[197])
 
     p = ParserCQL()
-    print(p.parse(create))
+    for query in queries:
+        print(p.parse(query))
 
 
 

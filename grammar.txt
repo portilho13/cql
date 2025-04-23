@@ -1,4 +1,4 @@
-<programa> ::= <comando> ";" <programa> | <comando> ";"
+<programa> ::= <comando> ";" <programa> | <comando> ";" | <comando> <- Perguntar ao prof
 
 <comando> ::= <import> 
             | <export> 

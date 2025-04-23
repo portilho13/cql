@@ -8,8 +8,8 @@ class ParserCQL(Parser):
     def programa(self):
         commands = []
         commands.append(self.comando())
-        self.char(";")
         try:
+            self.char(";")
             commands.extend(self.programa())
         except ParseError:
             pass  # ε (empty): end of program
@@ -22,7 +22,8 @@ class ParserCQL(Parser):
                           'rename',
                           'print_table',
                           'select',
-                          'create_table'
+                          'create_table',
+                          'procedure_def'
                           )
 
     def import_table(self):
@@ -230,6 +231,27 @@ class ParserCQL(Parser):
                 "identifier2": identifier2,
                 "identifier3": identifier3,
             }
+        
+    def procedure_def(self):
+        self.keyword("PROCEDURE")
+
+        ident_start = self.char("a-zA-Z_")
+        identifier = self.identificador(ident_start)
+
+        self.keyword("DO")
+
+        programa = self.programa()
+        print(programa)
+
+
+        self.keyword("END")
+
+        return {
+            "type": "PROCEDURE",
+            "identifier": identifier,
+            "programa": programa
+        }
+
 
         
 
