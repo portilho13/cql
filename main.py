@@ -1,7 +1,7 @@
 from fm import FileManager
 import base64
 from parser.pe import ParseError
-from parser.parser import Parser
+from parser.pcql import ParserCQL
 
 def main():
     #fm = FileManager()
@@ -12,10 +12,9 @@ def main():
 
     #t.getByParams(["Id"])
 
-    text = "" \
-    "SELECT * FROM observacoes;"
+    text = 'IMPORT TABLE observacoes FROM "ola";'
 
-    p = Parser()
+    p = ParserCQL()
     p.parse(text)
 
 

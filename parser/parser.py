@@ -88,7 +88,7 @@ class Parser:
             low = self.pos + 1
             high = low + len(keyword)
 
-            if self.text[low::high] == keyword:
+            if self.text[low:high] == keyword:
                 self.pos += len(keyword)
                 self.eat_whitespace()
                 return keyword
@@ -157,7 +157,7 @@ class Parser:
         try:
             return self.keyword(*keywords)
         except ParseError:
-        return None
+            return None
 
 
     
