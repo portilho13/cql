@@ -99,5 +99,16 @@ class Parser:
             ','.join(keywords),
             self.text[self.pos + 1],
         )
+    
+    def item(self):
+        self.eat_whitespace()
+        try:
+            rv = self.number()
+        except ParseError:
+            rv = self.word()
+        self.eat_whitespace()
+        return rv
+    
+
 
     
