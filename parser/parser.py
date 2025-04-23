@@ -109,6 +109,55 @@ class Parser:
         self.eat_whitespace()
         return rv
     
+    def match(self, *rules):
+        self.eat_whitespace()
+        last_error_pos = -1
+        last_exception = None
+        last_error_rules = []
+
+        for rule in rules:
+            initial_pos = self.pos
+
+            try:
+                rv = getattr(self, rule)()
+                self.eat_whitespace()
+                return rv
+            except ParseError as e:
+                self.pos = initial_pos
+
+                if e.pos > last_error_pos:
+                    last_exception = e
+                    last_error_pos = e.pos
+                    last_error_rules.clear()
+                    last_error_rules.append(rule)
+        
+        if len(last_error_rules) == 1:
+            raise last_exception
+        else:
+            raise ParseError(
+                last_error_pos,
+                'Expected %s but got %s',
+                ','.join(last_error_rules),
+                self.text[last_error_pos]
+            )
+        
+    def maybe_char(self, chars=None):
+        try:
+            return self.char(chars)
+        except ParseError:
+            return None
+
+    def maybe_match(self, *rules):
+        try:
+            return self.match(*rules)
+        except ParseError:
+            return None
+
+    def maybe_keyword(self, *keywords):
+        try:
+            return self.keyword(*keywords)
+        except ParseError:
+        return None
 
 
     
