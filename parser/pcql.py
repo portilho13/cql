@@ -3,6 +3,7 @@ from parser.pe import ParseError
 
 class ParserCQL(Parser):
     def start(self):
+        self.eat_comments()
         return self.programa()
 
     def programa(self):
@@ -262,6 +263,50 @@ class ParserCQL(Parser):
             "type": "CALL",
             "identifier": identifier
         }
+    
+    def eat_comments(self):
+        st = ""
+        is_line_comment = False
+        is_block_comment = False
+
+        while self.pos < self.len:
+            self.pos += 1
+
+            #Check for --
+            if not is_line_comment and not is_block_comment and self.text[self.pos:self.pos + 2] == "--":
+                is_line_comment = True
+                self.pos += 1  # Skip next '-'
+                continue
+
+            #Check for {-
+            if not is_line_comment and not is_block_comment and self.text[self.pos:self.pos + 2] == "{-":
+                is_block_comment = True
+                self.pos += 1
+                continue
+
+            # End of a line comment
+            if is_line_comment and self.text[self.pos] == '\n':
+                is_line_comment = False
+
+            # End of a block comment
+            elif is_block_comment and self.text[self.pos:self.pos + 2] == "-}":
+                is_block_comment = False
+                self.pos += 1  # Skip next '}'
+                continue
+
+            #If not comment, append
+            if not is_line_comment and not is_block_comment:
+                st += self.text[self.pos]
+
+        #Update object state
+        self.text = st
+        self.pos = -1
+        self.len = len(st) - 1
+
+
+
+
+
 
 
         

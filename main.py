@@ -25,14 +25,18 @@ def main():
     END"""
     call = "CALL atualizar_vendas;"
 
-    queries = [imp, export, discard, rename, print_table, select, create, procedure_text, call]
+    select_with_comments = """
+    SELECT id,nome,etc FROM ola WHERE id >= 1;
+    -- This is a single-line comment
+    {- This is a block comment
+    spanning multiple lines -}
+    """
 
     p = ParserCQL()
+
+    queries = [imp, export, discard, rename, print_table, select, create, procedure_text, call, select_with_comments]
     for query in queries:
         print(p.parse(query))
-
-
-
 
 
 if __name__ == "__main__":
