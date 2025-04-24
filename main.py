@@ -2,6 +2,7 @@ from fm import FileManager
 import base64
 from parser.pe import ParseError
 from parser.pcql import ParserCQL
+from ast.ast import Ast
 
 def main():
     #fm = FileManager()
@@ -37,6 +38,19 @@ def main():
     queries = [imp, export, discard, rename, print_table, select, create, procedure_text, call, select_with_comments]
     for query in queries:
         print(p.parse(query))
+
+    l = [p.parse(imp), p.parse(export)]
+
+    ast = Ast(l)
+    
+    ast.parse()
+    ast.pretty_print()
+
+
+    #import_ast = ImportTableNode(l['identifier'], l['source'])
+    #import_ast.pretty_print()
+
+    #export_ast = ExportTableNode(l)
 
 
 if __name__ == "__main__":

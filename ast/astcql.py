@@ -1,16 +1,16 @@
-from .ast import AstNode 
+from .an import AstNode 
 
 class ImportTableNode(AstNode):
-    def __init__(self, table_name, source):
+    def __init__(self, text):
         self.type = "IMPORT"
-        self.table_name = table_name
-        self.source = source
+        self.table_name = text["identifier"]
+        self.source = text["source"]
 
 class ExportTableNode(AstNode):
-    def __init__(self, table_name, destination):
+    def __init__(self, text):
         self.type = "EXPORT"
-        self.table_name = table_name
-        self.destination = destination
+        self.table_name = text["identifier"]
+        self.destination = text["destination"]
 
 class DiscardTableNode(AstNode):
     def __init__(self, table_name):
@@ -29,12 +29,16 @@ class PrintTableNode(AstNode):
         self.table_name = table_name
 
 class SelectNode(AstNode):
-    def __init__(self, sel, from_table_name, condition, limit):
+    def __init__(self, sel, from_table_name, optional_condition, limit):
         self.type = "SELECT"
         self.sel = sel,
         self.from_table_name = from_table_name
-        self.condition = condition
+        self.optional_condition = optional_condition
         self.limit = limit
+
+class OptionalConditionNode(AstNode):
+    def __init__(self, condition):
+        self.condition = condition
 
 class ConditionNode(AstNode):
     def __init__(self, identifier, operator, value, extra):
