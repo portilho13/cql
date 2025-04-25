@@ -35,11 +35,12 @@ def main():
 
     p = ParserCQL()
 
+
+    l = []
     queries = [imp, export, discard, rename, print_table, select, create, procedure_text, call, select_with_comments]
     for query in queries:
         print(p.parse(query))
-
-    l = [p.parse(imp), p.parse(export)]
+        l.append(p.parse(query))
 
     ast = Ast(l)
     

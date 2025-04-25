@@ -25,7 +25,6 @@ class Ast():
 
     def parse(self):
         for instruction in self.instructions:
-            print(self.instructions)
             ins = instruction[0]
             node_type = ins["type"] #Fix this, ast should be created recursibly ?
 
@@ -34,3 +33,13 @@ class Ast():
                     self.parsed_instructions.append(ImportTableNode(ins))
                 case "EXPORT":
                     self.parsed_instructions.append(ExportTableNode(ins))
+                case "DISCARD":
+                    self.parsed_instructions.append(DiscardTableNode(ins))
+                case "RENAME":
+                    self.parsed_instructions.append(RenameTableNode(ins))
+                case "PRINT":
+                    self.parsed_instructions.append(PrintTableNode(ins))
+                case "SELECT":
+                    self.parsed_instructions.append(SelectNode(ins))
+                case _:
+                    pass
