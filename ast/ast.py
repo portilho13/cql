@@ -21,8 +21,6 @@ class Ast():
             else:
                 print(f"{prefix}    {instr}")
 
-    
-
     def parse(self):
         for instruction in self.instructions:
             ins = instruction[0]

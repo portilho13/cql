@@ -22,6 +22,7 @@ class AstNode():
                 print(f"{prefix}  ]")
             else:
                 print(f"{prefix}  {key}: {value}")
+
     
 
     def parse(self, text):
