@@ -39,7 +39,7 @@ def main():
     l = []
     queries = [imp, export, discard, rename, print_table, select, create, procedure_text, call, select_with_comments]
     for query in queries:
-        print(p.parse(query))
+        #print(p.parse(query))
         l.append(p.parse(query))
 
     ast = Ast(l)
@@ -47,11 +47,6 @@ def main():
     ast.parse()
     ast.pretty_print()
 
-
-    #import_ast = ImportTableNode(l['identifier'], l['source'])
-    #import_ast.pretty_print()
-
-    #export_ast = ExportTableNode(l)
 
 
 if __name__ == "__main__":

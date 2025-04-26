@@ -11,10 +11,10 @@ class ParserCQL(Parser):
         commands.append(self.comando())
         try:
             self.char(";")
-            commands.extend(self.programa())
+            commands.extend(self.programa()["commands"])
         except ParseError:
             pass  # ε (empty): end of program
-        return commands
+        return {"type": "PROGRAMA", "commands": commands}
 
     def comando(self):
         return self.match('import_table', 
@@ -201,17 +201,7 @@ class ParserCQL(Parser):
 
     def create_body(self):
         try:
-            self.keyword("SELECT")
-            selecao = self.selecao()
-            self.keyword("FROM")
-            ident_start = self.char("a-zA-Z_")
-            identifier = self.identificador(ident_start)
-            condicao_opcional = self.condicao_opcional()
-            return {
-                "selecao": selecao,
-                "identifier": identifier,
-                "condicao_opcional": condicao_opcional,
-            }
+            return self.select()
         except ParseError:
             self.keyword("FROM")
             ident_start = self.char("a-zA-Z_")
@@ -229,6 +219,7 @@ class ParserCQL(Parser):
             self.char(")")
 
             return {
+                "type": "FROM",
                 "identifier": identifier,
                 "identifier2": identifier2,
                 "identifier3": identifier3,
@@ -243,7 +234,6 @@ class ParserCQL(Parser):
         self.keyword("DO")
 
         programa = self.programa()
-        print(programa)
 
 
         self.keyword("END")
